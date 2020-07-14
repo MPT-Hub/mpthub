@@ -26,8 +26,9 @@ class mainWindow (wx.Frame):
                           style=wx.SYSTEM_MENU | wx.CAPTION |
                           wx.MINIMIZE_BOX | wx.CLOSE_BOX)
 
-        settings = Settings()
-        self.SetIcon(wx.Icon(os.path.join(settings.ICON_PATH, "icon.ico")))
+        self.settings = Settings()
+        self.SetIcon(wx.Icon(os.path.join(
+            self.settings.ICON_PATH, "icon.ico")))
         self.SetSizeHints(wx.Size(688, 480), wx.Size(688, 480))
         self.create_menu_bar()
         self.create_layout()
