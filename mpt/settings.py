@@ -40,76 +40,76 @@ class Settings():
 
         self.MENU = {
             1: {
-                "menu_name": "&File",
+                "menu_label": "&File",
                 "menu_items": {
                     1: {
-                        "submenu_name": "&Open files",
+                        "submenu_label": "&Open files",
                         "submenu_value": "Open ImageJ result file(s)",
-                        "submenu_action": "on_mnuImport",
-                        "submenu_visible": True
+                        "submenu_handler": "self.on_mnuImport",
+                        "submenu_enable": True
                     },
-                    1: {
-                        "submenu_name": "&Save reports",
+                    2: {
+                        "submenu_label": "&Save reports",
                         "submenu_value": "Save analysis report files",
-                        "submenu_action": "on_mnuExport",
-                        "submenu_visible": False
+                        "submenu_handler": "self.on_mnuExport",
+                        "submenu_enable": False
                     }
                 }
             },
             2: {
-                "menu_name": "&Edit",
+                "menu_label": "&Edit",
                 "menu_items": {
                     1: {
-                        "submenu_name": "App configuration",
+                        "submenu_label": "App configuration",
                         "submenu_value": "General configuration",
-                        "submenu_action": "on_mnuGeneral",
-                        "submenu_visible": True,
+                        "submenu_handler": "self.on_mnuGeneral",
+                        "submenu_enable": True,
                     },
                     2: {
-                        "submenu_name": "Diffusivity configuration",
+                        "submenu_label": "Diffusivity configuration",
                         "submenu_value": "Diffusivity ranges configuration",
-                        "submenu_action": "on_mnuDiffusivity",
-                        "submenu_visible": True,
+                        "submenu_handler": "self.on_mnuDiffusivity",
+                        "submenu_enable": True,
                     },
                     3: {
-                        "submenu_name": "",
+                        "submenu_label": "",
                         "submenu_value": "",
-                        "submenu_action": "",
-                        "submenu_visible": True,
+                        "submenu_handler": "",
+                        "submenu_enable": True,
                     },
                     4: {
-                        "submenu_name": "Start analysis",
+                        "submenu_label": "Start analysis",
                         "submenu_value": "Starts MPT analysis",
-                        "submenu_action": "on_mnuAnalysis",
-                        "submenu_visible": False,
+                        "submenu_handler": "self.on_mnuAnalysis",
+                        "submenu_enable": False,
                     },
                     5: {
-                        "submenu_name": "",
+                        "submenu_label": "",
                         "submenu_value": "",
-                        "submenu_action": "",
-                        "submenu_visible": True,
+                        "submenu_handler": "",
+                        "submenu_enable": True,
                     },
                     6: {
-                        "submenu_name": "Clear summary",
+                        "submenu_label": "Clear summary",
                         "submenu_value": "Clear current summary list",
-                        "submenu_action": "on_mnuClear",
-                        "submenu_visible": False,
+                        "submenu_handler": "self.on_mnuClear",
+                        "submenu_enable": False,
                     },
                 }
             },
             3: {
-                "menu_name": "&Help",
+                "menu_label": "&Help",
                 "menu_items": {
                     1: {
-                        "submenu_name": "&Documentation",
+                        "submenu_label": "&Documentation",
                         "submenu_value": "Application documentation",
-                        "submenu_action": "on_mnuHelp",
+                        "submenu_action": "self.on_mnuHelp",
                         "submenu_visible": False
                     },
                     2: {
-                        "submenu_name": "&About",
+                        "submenu_label": "&About",
                         "submenu_value": "About this program",
-                        "submenu_action": "on_mnuAbout",
+                        "submenu_action": "self.on_mnuAbout",
                         "submenu_visible": False
                     },
                 }
