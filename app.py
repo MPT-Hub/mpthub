@@ -13,7 +13,10 @@ ui = FlaskUI(server, maximized=True)
 #              browser_path="./chrome/chrome.exe")
 # df = pd.read_csv('https://gist.githubusercontent.com/chriddyp/c78bf172206ce24f77d6363a2d754b59/raw/c353e8ef842413cae56ae3920b8fd78468aa4cb2/usa-agricultural-exports-2011.csv')
 
-df = pd.read_csv('C:/Users/lga/OneDrive/Pessoal/Acadêmico/FEUP/2019-2020-PDISS_DISS/_research/Results/20200218/ImageJ/561_H2O_200ul/561_D2_H2O_200ul_Series001_RAW_ch00.csv')
+# df = pd.read_csv('C:/Users/lga/OneDrive/Pessoal/Acadêmico/FEUP/2019-2020-PDISS_DISS/_research/Results/20200218/ImageJ/561_H2O_200ul/561_D2_H2O_200ul_Series001_RAW_ch00.csv')
+
+df = pd.read_csv(
+    'D:/OneDrive/Pessoal/Acadêmico/FEUP/2019-2020-PDISS_DISS/_research/Results/20200218/ImageJ/561_H2O_200ul/561_D2_H2O_200ul_Series001_RAW_ch00.csv')
 
 
 def generate_table(dataframe, max_rows=10):
