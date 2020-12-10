@@ -128,6 +128,7 @@ def manage_summary(values, action):
         PreventUpdate
         return
 
+    result = False
     if trigger == 'report' and not all(x is None for x in values):
         result = mpta.remove_report(values.index(1))
 
@@ -138,6 +139,7 @@ def manage_summary(values, action):
         result = mpta.analyze()
         url = "/result"  # if result else "/import"
 
+    print(result)
     return url
 
 
