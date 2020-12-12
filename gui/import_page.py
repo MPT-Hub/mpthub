@@ -40,7 +40,8 @@ def update_output(summary, total):
                 html.Tr([
                     html.Th(
                         col,
-                        className="text-right" if col == ["Total"] else "text-center")
+                        className="text-right"
+                        if col == "Total" else "text-center")
                     for col in total])],
                 className="bg-light")],
             className="table-hover")
