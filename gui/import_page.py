@@ -31,7 +31,6 @@ def update_output(summary, total):
                         (html.A(
                             href="#",
                             id={'type': 'report', 'index': index},
-                            # id=f"trajectory-{i}",
                             className="text-danger far fa-trash-alt"))
                         if col == "Remove" else summary.iloc[index][col],
                         className="" if col == "File" else "text-center")
@@ -41,8 +40,7 @@ def update_output(summary, total):
                 html.Tr([
                     html.Th(
                         col,
-                        className="text-right"
-                        if col == ["Total"] else "text-center")
+                        className="text-right" if col == ["Total"] else "text-center")
                     for col in total])],
                 className="bg-light")],
             className="table-hover")
@@ -59,38 +57,7 @@ def Import_page():
     table_content = ""
     if len(summary) > 0:
         button_style = {"display": "block"}
-
         table_content = update_output(summary, total)
-
-        # table_content = dbc.Table([
-        #     html.Thead(
-        #         html.Tr([
-        #             html.Th(
-        #                 col if col != 'Remove' else '',
-        #                 className="text-center")
-        #             for col in summary.columns]),
-        #         className="text-white bg-primary"),
-        #     html.Tbody([
-        #         html.Tr([
-        #             html.Td(
-        #                 (html.A(
-        #                     href="#",
-        #                     id={'type': 'report', 'index': index},
-        #                     # id=f"trajectory-{i}",
-        #                     className="text-danger far fa-trash-alt"))
-        #                 if col == "Remove" else summary.iloc[index][col],
-        #                 className="" if col == "File" else "text-center")
-        #             for col in summary.columns])
-        #         for index in range(len(summary))]),
-        #     html.Tfoot([
-        #         html.Tr([
-        #             html.Th(
-        #                 col,
-        #                 className="text-right"
-        #                 if col == ["Total"] else "text-center")
-        #             for col in total])],
-        #         className="bg-light")],
-        #     className="table-hover")
 
     output_div = html.Div(id="analysis-progress", style={"display": "none"})
 
@@ -114,7 +81,8 @@ def Import_page():
                     className="text-right",
                     style=button_style)
             ], id="import-button-div")
-        ], id="", style={"marginTop": '21vh', "width": "7rem", "height": "7rem"})])
+        ], id="",
+            style={"marginTop": '21vh', "width": "7rem", "height": "7rem"})])
 
     upload_area = html.Div(
         dcc.Upload(
@@ -125,9 +93,7 @@ def Import_page():
                                html.A('Select Files')],
                               className='container-fluid'),
             style={
-                # 'width': '100%',
                 'height': '240px',
-                #    'lineHeight': '60px',
                 'borderWidth': '1px',
                 'borderStyle': 'dashed',
                 'borderRadius': '5px',

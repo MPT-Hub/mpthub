@@ -4,7 +4,7 @@ import dash_bootstrap_components as dbc
 from gui.navbar import Navbar
 from gui.footer import Footer
 from gui.sidebar import Sidebar
-from gui.sections import Section_1, Section_2, Section_3, Section_4
+from gui.sections import _section_1, _section_2, _section_3, _section_4
 
 # TODO: Review documentation
 
@@ -33,10 +33,10 @@ introduction = html.Div(children=[
             href="#section_4",
             className="p-0"))])])
 
-section_1 = Section_1()
-section_2 = Section_2()
-section_3 = Section_3()
-section_4 = Section_4()
+section_1 = _section_1()
+section_2 = _section_2()
+section_3 = _section_3()
+section_4 = _section_4()
 
 full_documentation = html.Div(children=[
     html.Hr(),

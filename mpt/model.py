@@ -1,85 +1,19 @@
 import io
 import base64
-# import markdown
 import pandas as pd
 import numpy as np
 from mpt import database as db
 from timeit import default_timer as timer
 
 
-# TODO: Persist to DB
 class Config:
 
-    def to_review(self):
-        # markdown.markdownFromFile(
-        #     input='./README.md',
-        #     output='output.html',
-        #     encoding='utf8',
-        # )
-
-        # def format_readme():
-        #     # print("test")
-        #     with open("./README.md", "r", encoding="utf-8") as input_file:
-        #         text = input_file.read()
-        #     # html = markdown.markdown(text)
-        #     print(markdown.markdown(text))
-
-        #     return text
-
-        # def Config(data):
-
-        #     for config in data:
-        #         print(config, type(config))
-
-        #     if data:
-        #         return True
-        #     return False
-
-        # def analyze():
-        #     # mpt.analyze -> returns success
-        #     return True
-
-        # def result():
-        #     # mpt.result -> returns result df list
-
-        # def export(data: pd.DataFrame):
-        #     # mpt.export -> returns success
-        #     return True
-
-        # def get_config():
-        #     # mpt.get_config -> returns df
-        #     return True
-
-        # def update_config():
-        #     # mpt.set_config ->
-        #     return True
-        pass
-
     def __init__(self) -> None:
-        self.__update_config()
+        self._update_config()
         self.slider_marks = {0: {'label': '0.0'},
                              0.5: {'label': '0.5'},
                              1: {'label': '1.0'},
                              1.5: {'label': u'\u221E'}}
-
-    def __update_config(self):
-        values = self.get_config()
-        self.p_size = values.p_size
-        self.fps = values.fps
-        self.frame_count = values.total_frames
-        self.frames_to_valid = values.min_frames
-        self.width_px = values.width_px
-        self.width_si = values.width_si
-        self.temperature_C = values.temperature_C
-        self.time = values.time
-        self.immobile_max = values.immobile_max
-        self.diffusive_min = values.diffusive_min
-        self.diffusive_max = values.diffusive_max
-        self.open_folder = values.open_folder
-        self.save_folder = values.save_folder
-
-        self.analysis = self.__get_analysis_data()
-        self.diffusivity = self.__get_diffusivity_data()
 
     def get_config(self) -> pd.DataFrame:
         conn = db.connect()
@@ -98,11 +32,30 @@ class Config:
 
         success = (len(message) > 0)
         if success:
-            self.__update_config()
+            self._update_config()
 
         return success
 
-    def __get_diffusivity_data(self):
+    def _update_config(self):
+        values = self.get_config()
+        self.p_size = values.p_size
+        self.fps = values.fps
+        self.frame_count = values.total_frames
+        self.frames_to_valid = values.min_frames
+        self.width_px = values.width_px
+        self.width_si = values.width_si
+        self.temperature_C = values.temperature_C
+        self.time = values.time
+        self.immobile_max = values.immobile_max
+        self.diffusive_min = values.diffusive_min
+        self.diffusive_max = values.diffusive_max
+        self.open_folder = values.open_folder
+        self.save_folder = values.save_folder
+
+        self.analysis = self._get_analysis_data()
+        self.diffusivity = self._get_diffusivity_data()
+
+    def _get_diffusivity_data(self):
         # TODO:Get data from DB
         diffusivity_data = {
             1: {"label": "Immobile",
@@ -146,7 +99,7 @@ class Config:
 
         return diffusivity_data
 
-    def __get_analysis_data(self):
+    def _get_analysis_data(self):
         # TODO:Get data from DB
         analysis_data = {
             1: {"label": "Size (nm)",
@@ -200,35 +153,31 @@ class Config:
         return analysis_data
 
 
-# TODO: Persist to DB
 class Analysis():
 
     def __init__(self) -> None:
-        # print("Initializing Analysis configuration object...")
-        # self.summary = pd.DataFrame()
-        # self.load_config()
-        self.use_DB = False
-
         self.config = Config()
         self.summary = pd.DataFrame(columns=["File", "Trajectory", "Valid"])
         self.summary_total = pd.DataFrame()
         self.trajectories = pd.DataFrame(
             columns=['Trajectory', 'Frame', 'x', 'y'])
 
+        self.use_DB = False
+
     def summarize(self, file_data_list, file_name_list) -> pd.DataFrame:
 
         if self.use_DB:
-            full_data = self.__clean_import(file_data_list, file_name_list)
-            summary = self.__summarize(full_data)
-            summary_total = self.__summary_total(summary)
+            full_data = self._clean_import(file_data_list, file_name_list)
+            summary = self._summarize(full_data)
+            summary_total = self._summary_total(summary)
 
             return summary, summary_total
         else:
             # ----------------------------------------------------------- No DB
-            self.trajectories = self.__clean_import(file_data_list,
-                                                    file_name_list)
-            self.summary = self.__summarize(self.trajectories)
-            self.summary_total = self.__summary_total(self.summary)
+            self.trajectories = self._clean_import(file_data_list,
+                                                   file_name_list)
+            self.summary = self._summarize(self.trajectories)
+            self.summary_total = self._summary_total(self.summary)
 
             return self.summary, self.summary_total
 
@@ -236,7 +185,7 @@ class Analysis():
 
         if self.use_DB:
             summary = pd.read_sql_table('summary', db.connect())
-            summary_total = self.__summary_total(summary)
+            summary_total = self._summary_total(summary)
 
             return summary, summary_total
         else:
@@ -251,13 +200,13 @@ class Analysis():
 
             summary.drop(report_index, inplace=True)
             summary = summary.reset_index().drop('index', axis=1)
-            summary_total = self.__summary_total(summary)
+            # summary_total = self.__summary_total(summary)
 
             db.update_table(
                 'summary', summary, ['file_name', 'trajectories', 'valid'],
                 True)
 
-            self.__remove_trajectories(summary['File'])
+            self._remove_trajectories(summary['File'])
 
             return True
         else:
@@ -265,9 +214,9 @@ class Analysis():
             report_name = self.summary.iloc[report_index]['File']
             self.summary.drop(report_index, inplace=True)
             self.summary = self.summary.reset_index().drop('index', axis=1)
-            self.summary_total = self.__summary_total(self.summary)
+            self.summary_total = self._summary_total(self.summary)
 
-            self.__remove_trajectories(report_name)
+            self._remove_trajectories(report_name)
 
             return True
 
@@ -280,39 +229,33 @@ class Analysis():
             db.update_table('summary', summary,
                             ['file_name', 'trajectories', 'valid'], True)
 
-            self.__clear_trajectories()
+            self._clear_trajectories()
 
             return True
         else:
             # ----------------------------------------------------------- No DB
             self.summary.drop(self.summary.index, inplace=True)
 
-            self.__clear_trajectories()
+            self._clear_trajectories()
 
             return True
 
     def analyze(self) -> bool:
 
-        self.__sanitize_trajectories()
-
-        # self.trajectories.to_csv('trajectories.csv')
+        self._sanitize_trajectories()
 
         time_step = 1 / self.config.fps
         max_time = self.config.frame_count / self.config.fps
         tau = np.linspace(time_step, max_time, self.config.frame_count)
 
-        msd = pd.DataFrame()
         trajectories_group = self.trajectories.groupby(
             ['File', 'Trajectory'], as_index=False)
-        # trajectories_group = self.trajectories.groupby(
-        #     ['File', 'Trajectory'])
 
         msd_init = timer()
-        # msd_init = time.time()
         i = 0
+        msd = pd.DataFrame()
         for (file, trajectory), trajectory_data in trajectories_group:
             init = timer()
-            # init = time.time()
             pixel_size = self.config.width_px / self.config.width_si
             frames = len(trajectory_data)
             t = tau[:frames]
@@ -333,8 +276,7 @@ class Analysis():
             msd[i] = msdm
 
             end = timer()
-            # end = time.time()
-            print("Time to proccess {}: {}".format(i, end - init))
+            print(f"Time to proccess {i:0d}: {end - init}")
 
             i += 1
 
@@ -349,16 +291,15 @@ class Analysis():
         msd['mean'] = msd.mean(axis=1)
 
         msd_end = timer()
-        # msd_end = time.time()
-        print("Time to proccess: {}".format(msd_end - msd_init))
+        print(f"Time to proccess: {msd_end - msd_init}")
 
         return (not msd.empty)
 
-    def __clean_import(self, data_list, name_list) -> pd.DataFrame:
+    def _clean_import(self, data_list, name_list) -> pd.DataFrame:
 
         full_data = pd.DataFrame()
         for content, name in zip(data_list, name_list):
-            file_data = self.__import(content, name)
+            file_data = self._import(content, name)
             if file_data.empty:
                 continue
             file_data.insert(0, "File", name, allow_duplicates=True)
@@ -372,7 +313,7 @@ class Analysis():
 
         return full_data
 
-    def __import(self, content, name) -> pd.DataFrame:
+    def _import(self, content, name) -> pd.DataFrame:
 
         content_type, content_string = content.split(',')
         decoded_data = base64.b64decode(content_string)
@@ -381,7 +322,7 @@ class Analysis():
             if 'csv' in name:
                 file_data = pd.read_csv(
                     io.StringIO(decoded_data.decode('utf-8')))
-                return self.__is_valid_csv(file_data)
+                return self._is_valid_csv(file_data)
 
             # elif 'txt' in name:
             #     df = pd.read_excel(io.BytesIO(decoded_data))
@@ -396,14 +337,14 @@ class Analysis():
             print(e)
             return pd.DataFrame()
 
-    def __is_valid_csv(self, df: pd.DataFrame) -> pd.DataFrame:
+    def _is_valid_csv(self, df: pd.DataFrame) -> pd.DataFrame:
         is_valid = set(['Trajectory', 'Frame', 'x', 'y']).issubset(df.columns)
         if is_valid:
             return df.iloc[:, :4]
         else:
             return pd.DataFrame()
 
-    def __summarize(self, full_data: pd.DataFrame) -> pd.DataFrame:
+    def _summarize(self, full_data: pd.DataFrame) -> pd.DataFrame:
 
         grouped_data = full_data.groupby(
             ['File', 'Trajectory'], as_index=False).count()[
@@ -432,17 +373,18 @@ class Analysis():
 
         return summary
 
-    def __summary_total(self, summary_data: pd.DataFrame) -> pd.Series:
+    def _summary_total(self, summary_data: pd.DataFrame) -> pd.Series:
 
         summary_total = summary_data.sum()
         summary_total['File'] = 'Total'
 
         return summary_total
 
-    def __remove_trajectories(self, report: str) -> bool:
-        trajectories = self.__load_trajectories()
+    def _remove_trajectories(self, report: str) -> bool:
+        trajectories = self._load_trajectories()
 
-        trajectories = trajectories[trajectories['File'] != report.values[0]]
+        # trajectories = trajectories[trajectories['File'] != report.values[0]]
+        trajectories = trajectories[trajectories['File'] != report]
 
         if self.use_DB:
             db.update_table(
@@ -457,8 +399,8 @@ class Analysis():
 
             return True
 
-    def __clear_trajectories(self) -> bool:
-        trajectories = self.__load_trajectories()
+    def _clear_trajectories(self) -> bool:
+        trajectories = self._load_trajectories()
         trajectories.drop(trajectories.index, inplace=True)
         if self.use_DB:
             db.update_table(
@@ -472,7 +414,7 @@ class Analysis():
 
             return True
 
-    def __load_trajectories(self) -> pd.DataFrame:
+    def _load_trajectories(self) -> pd.DataFrame:
 
         if self.use_DB:
             return pd.read_sql_table('trajectories', db.connect())
@@ -480,10 +422,10 @@ class Analysis():
             # ----------------------------------------------------------- No DB
             return self.trajectories
 
-    def __sanitize_trajectories(self) -> None:
+    def _sanitize_trajectories(self) -> None:
         # def __sanitize_trajectories(self) -> pd.DataFrame:
 
-        trajectories = self.__load_trajectories()
+        trajectories = self._load_trajectories()
         grouped = trajectories.groupby(
             ['File', 'Trajectory'],
             as_index=False).count()[['File', 'Trajectory', 'Frame']]

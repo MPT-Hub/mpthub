@@ -125,8 +125,6 @@ def Config_page():
                      max_intervals=1),
         dcc.Loading(
             html.Div(cards, id="config_div"),
-            # color='primary',
-            # type="cube",
             style={"marginTop": '21vh', "width": "7rem", "height": "7rem"}),
         html.Div(
             dbc.Button("Save", id="save_config",

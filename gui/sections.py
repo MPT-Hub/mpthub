@@ -2,7 +2,7 @@ import dash_html_components as html
 from dash_bootstrap_components import Table
 
 
-def Section_1():
+def _section_1():
 
     materials = html.Div(children=[
         html.H4("Materials"),
@@ -107,7 +107,7 @@ def Section_1():
     return section
 
 
-def Section_2():
+def _section_2():
 
     config = html.Div(children=[
         html.H4("Microscope configuration (LAS):"),
@@ -162,7 +162,7 @@ def Section_2():
     return section
 
 
-def Section_3():
+def _section_3():
 
     section = html.Div(children=[
         html.P(children=[
@@ -243,7 +243,7 @@ def Section_3():
     return section
 
 
-def Section_4():
+def _section_4():
 
     app_installation = html.Div(children=[
         html.H4("App installation"),

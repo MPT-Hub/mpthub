@@ -30,19 +30,7 @@ body_content = html.Div(children=[
             dbc.Button("Export Einstein-Stokes report",
                        id={'page': 'results', 'type': 'einstein-stokes'},
                        color="primary", className="text-center"),
-            id="einstein-stokes-div", className="text-right", width=4)]),
-    # html.P("Testing..."),
-    # html.P(f"micro (mu): {chr(956)}"),
-    # html.I(className="far fa-trash-alt"), html.Br(),
-    # html.I(className="fas fa-trash-alt"), html.Br(),
-    # html.I(className="fas fa-minus"), html.Br(),
-    # html.I(className="fas fa-times"), html.Br(),
-    # html.I(className="far fa-times-circle"), html.Br(),
-    # html.I(className="fas fa-ban"), html.Br(),
-    # html.I(className="fas fa-list-alt"), html.Br(),
-    # html.I(className="fas fa-eye"), html.Br(),
-    # html.I(className="far fa-chart-bar")
-])
+            id="einstein-stokes-div", className="text-right", width=4)])])
 
 body = html.Div(
     dbc.Row(children=[
