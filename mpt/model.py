@@ -161,6 +161,7 @@ class Analysis():
         self.summary_total = pd.DataFrame()
         self.trajectories = pd.DataFrame(
             columns=['Trajectory', 'Frame', 'x', 'y'])
+        self.msd = pd.DataFrame()
 
         self.use_DB = False
 
@@ -191,6 +192,16 @@ class Analysis():
         else:
             # ----------------------------------------------------------- No DB
             return self.summary, self.summary_total
+
+    def load_msd(self) -> pd.DataFrame:
+
+        if self.use_DB:
+            msd = pd.read_sql_table('msd', db.connect())
+
+            return msd
+        else:
+            # ----------------------------------------------------------- No DB
+            return self.msd
 
     def remove_report(self, report_index: int) -> bool:
 
@@ -241,7 +252,7 @@ class Analysis():
             return True
 
     def analyze(self) -> bool:
-
+        self.msd = pd.DataFrame()
         self._sanitize_trajectories()
 
         time_step = 1 / self.config.fps
@@ -288,10 +299,18 @@ class Analysis():
         msd.name = "MSD"
         msd.set_index('tau', inplace=True)
         msd.index.name = f'Timescale ({chr(120591)}) (s)'
+        msd.columns = [f'MSD {col}' for col in msd.columns.values]
         msd['mean'] = msd.mean(axis=1)
 
         msd_end = timer()
         print(f"Time to proccess: {msd_end - msd_init}")
+
+        if self.use_DB:
+            db.update_table('msd', msd.reset_index(),
+                            msd.reset_index().columns.values,
+                            True)
+        else:
+            self.msd = msd.reset_index()
 
         return (not msd.empty)
 
