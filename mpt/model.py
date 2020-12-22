@@ -144,7 +144,13 @@ class Config:
                 "input_type": "number",
                 "input_id": "time",
                 "input_value": self.time,
-                "tip": "Trajectory time to analyze"}, }
+                "tip": "Trajectory time to analyze"},
+            8: {"label": "Temperature (C)",
+                "html_for": "temperature",
+                "input_type": "number",
+                "input_id": "temperature",
+                "input_value": self.temperature_C,
+                "tip": "Temperature during experiment, in Celsius degrees."}}
 
         # d = {'label': [1, 2], 'col2': [3, 4]}
         # df = pd.DataFrame(data=analysis_data)

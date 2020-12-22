@@ -32,6 +32,6 @@ class Settings():
         self.DEFAULT_FPS = 30
         self.DEFAULT_TOTAL_FRAMES = 606
         self.DEFAULT_WIDTH_PX = 512
-        self.DEFAULT_WIDTH_SI = 160
-        self.DEFAULT_TEMPERATURE_C = 37
-        self.DEFAULT_TIME = 10
+        self.DEFAULT_WIDTH_SI = 160.01
+        self.DEFAULT_TEMPERATURE_C = 37.01
+        self.DEFAULT_TIME = 10.01
