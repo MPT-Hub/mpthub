@@ -695,22 +695,57 @@ class Report():
         header_format = workbook.add_format(
             {'align': 'center', 'bold': 1})
 
-        data_sheet = writer.sheets['Characterization']
-        data_sheet.set_column(0, 0, 4, header_format)
-        data_sheet.set_column(0, 0, 12, sheet_format)
-        data_sheet.set_column(3, 3, 18, sheet_format)
-        data_sheet.set_column(4, 4, 12, sheet_format)
-        data_sheet.set_column(5, 5, 7, sheet_format)
+        characterization_sheet = writer.sheets['Characterization']
+        characterization_sheet.set_column(0, 0, 4, header_format)
+        characterization_sheet.set_column(0, 0, 12, sheet_format)
+        characterization_sheet.set_column(3, 3, 18, sheet_format)
+        characterization_sheet.set_column(4, 4, 12, sheet_format)
+        characterization_sheet.set_column(5, 5, 7, sheet_format)
 
-        data_sheet.write('A1', 'Slopes', header_format)
-        data_sheet.write('D1', 'Transport Mode', header_format)
-        data_sheet.write('E1', 'Slope', header_format)
-        data_sheet.write('F1', 'Count', header_format)
+        characterization_sheet.write('A1', 'Slopes', header_format)
+        characterization_sheet.write('D1', 'Transport Mode', header_format)
+        characterization_sheet.write('E1', 'Slope', header_format)
+        characterization_sheet.write('F1', 'Count', header_format)
 
-        data_sheet.write('D2', 'Immobile')
-        data_sheet.write('D3', 'Sub-diffusive')
-        data_sheet.write('D4', 'Diffusive')
-        data_sheet.write('D5', 'Active')
+        characterization_sheet.write('D2', 'Immobile')
+        characterization_sheet.write('D3', 'Sub-diffusive')
+        characterization_sheet.write('D4', 'Diffusive')
+        characterization_sheet.write('D5', 'Active')
+
+        # -------------------------------------------------------- SLOPE and R2
+        import string
+        import itertools
+        min_row = 2
+        total_trajectories = len(msd.columns)-1
+
+        column_list = list(
+            itertools.chain(string.ascii_uppercase,
+                            (''.join(pair) for pair in itertools.product(
+                                string.ascii_uppercase, repeat=2))
+                            ))[1:total_trajectories+1]
+
+        # --------------------------------------------------------------- SLOPE
+        characterization_sheet.write(
+            'B1', 'Slopes (Excel)', header_format)
+        excel_slopes = [f'B{x+min_row}' for x in list(
+            range(total_trajectories))]
+        slope_formulas = [
+            f'=SLOPE(Data!{x}3:{x}305,Data!A3:A305)' for x in column_list]
+
+        for cell, formula in zip(excel_slopes, slope_formulas):
+            characterization_sheet.write_formula(cell, formula)
+
+        # ------------------------------------------------------------------ R2
+        characterization_sheet.write(
+            'C1', f'R{chr(178)} (Excel)', header_format)
+        excel_r2 = [f'C{x+min_row}' for x in list(
+            range(total_trajectories))]
+        r2_formulas = [
+            f'=RSQ(Data!{x}3:{x}305,Data!A3:A305)' for x in column_list]
+
+        for cell, formula in zip(excel_r2, r2_formulas):
+            characterization_sheet.write_formula(cell, formula)
+        # ---------------------------------------------------------------------
 
         immobile_low = locale.format_string(
             "%.1f", self.config.immobile['min'])
@@ -727,13 +762,13 @@ class Report():
         active_low = locale.format_string(
             "%.1f", self.config.active['min'])
 
-        data_sheet.write(
+        characterization_sheet.write(
             'E2', f'{str(immobile_low)}-{str(immobile_high)}')
-        data_sheet.write(
+        characterization_sheet.write(
             'E3', f'{str(subdiffusive_low)}-{str(subdiffusive_high)}')
-        data_sheet.write(
+        characterization_sheet.write(
             'E4', f'{str(diffusive_low)}-{str(diffusive_high)}')
-        data_sheet.write(
+        characterization_sheet.write(
             'E5', f'{str(active_low)}+')
 
         immobile_formula = f'=COUNTIF(A:A,"<{subdiffusive_low}")'
@@ -743,22 +778,26 @@ class Report():
         diffusive_formula += f'A:A,"<{active_low}")'
         active_formula = f'=COUNTIF(A:A,">={active_low}")'
 
-        data_sheet.write_formula('F2', immobile_formula, count_format)
-        data_sheet.write_formula('F3', subdiffusive_formula, count_format)
-        data_sheet.write_formula('F4', diffusive_formula, count_format)
-        data_sheet.write_formula('F5', active_formula, count_format)
+        characterization_sheet.write_formula(
+            'F2', immobile_formula, count_format)
+        characterization_sheet.write_formula(
+            'F3', subdiffusive_formula, count_format)
+        characterization_sheet.write_formula(
+            'F4', diffusive_formula, count_format)
+        characterization_sheet.write_formula(
+            'F5', active_formula, count_format)
 
         # Statistical info
         summary_format = workbook.add_format(
             {'align': 'right',
              'valign': 'vcenter'})
-        data_sheet.write('D8', '<slope> = ', summary_format)
-        data_sheet.write('D9', 'N = ', summary_format)
-        data_sheet.write('D10', 'STD = ', summary_format)
+        characterization_sheet.write('D8', '<slope> = ', summary_format)
+        characterization_sheet.write('D9', 'N = ', summary_format)
+        characterization_sheet.write('D10', 'STD = ', summary_format)
 
-        data_sheet.write_formula('E8', '=AVERAGE(A:A)')
-        data_sheet.write_formula('E9', '=COUNT(A:A)', count_format)
-        data_sheet.write_formula('E10', '=STDEV(A:A)')
+        characterization_sheet.write_formula('E8', '=AVERAGE(A:A)')
+        characterization_sheet.write_formula('E9', '=COUNT(A:A)', count_format)
+        characterization_sheet.write_formula('E10', '=STDEV(A:A)')
 
         workbook.close()
         writer.save()
