@@ -91,10 +91,10 @@ class Analysis():
                 self.trajectories = self.trajectories.append(
                     raw_data, ignore_index=True)
 
-        self.remove_gaps()
+        # self.remove_gaps()
 
-    def remove_gaps(self):
-        self.trajectories['frame'] = self.trajectories.index.values
+    # def remove_gaps(self):
+    #     self.trajectories['frame'] = self.trajectories.index.values
 
     def clear_summary(self):
         self.summary = self.summary.iloc[0:0]

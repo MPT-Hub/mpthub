@@ -284,6 +284,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.threadpool.start(worker)
 
     def on_start_analysis_tp(self):
+        # self.mpt_analysis_tp()
         worker = Worker(self.mpt_analysis_tp)
         self.threadpool.start(worker)
 
